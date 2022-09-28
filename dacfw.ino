@@ -45,5 +45,6 @@ void loop() {
  
   ButtonAction(&saved);
   GetDACDataSerial();
+  ReturnToMainMode();
   
 }

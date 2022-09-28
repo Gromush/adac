@@ -21,6 +21,7 @@
 
 #define BUTTON_DEBOUNCE_TIMEOUT   50   // 50 ms
 #define BUTTON_LONG_PRESS_TIMEOUT 1000 // 1 s
+#define RETURN_MAIN_MODE_TIMER    30000 // 30s
 
 #define MAX_FILTER_NUM           7 // last filter
 #define MIN_FILTER_NUM           4 // first filter

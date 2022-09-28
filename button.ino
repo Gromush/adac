@@ -9,6 +9,7 @@ MonStates_t gMonState = MON_MAX_VALUE;
 #endif
 
 Button_t gBConf;
+unsigned int retTimer=0;
 
 void ButtonInit(void)
 {
@@ -16,14 +17,27 @@ void ButtonInit(void)
   gBConf = B_MAX_VALUE;
 }
 
+void ReturnToMainMode(void)
+{
+  if (retTimer != 0)
+  {
+    if ((millis() - retTimer) > RETURN_MAIN_MODE_TIMER)
+    {
+       PrintDisplay();
+       retTimer = 0;
+       gBConf = B_MAX_VALUE;
+    }    
+  }
+}
 
 void ButtonAction(SavedData_t * saved)
 {
-  static unsigned int mstart=0, mcurr = 0;;    // start timer
+  static unsigned int mstart=0, mcurr = 0;    // start timer
   static bool debounceDone = false;
   static bool isEnter = false;
   unsigned int timeout,len;
   char str[30]={0};
+  
   
   if (!digitalRead(BUTTON_FILTER)) // Button pressed
   {
@@ -47,6 +61,7 @@ void ButtonAction(SavedData_t * saved)
         {
            if (!isEnter)
            {
+            
              // Change current state to filter setup
              switch(gBConf)
              {
@@ -56,6 +71,7 @@ void ButtonAction(SavedData_t * saved)
                 sprintf(str, "Filter: %s", filters[GetGConfig()->FilterNum - FILTER_INDEX_OFFSET]);
                 LCD_Print(0,1, str, false);
                 isEnter = true;
+                retTimer = millis();
                 break;
               case B_FILTER_CHANGE:
                 gBConf = B_INPUT_CHANGE;
@@ -63,6 +79,7 @@ void ButtonAction(SavedData_t * saved)
                 sprintf(str, "Input: %s", inputStr[GetGConfig()->inputType]);
                 LCD_Print(0,1, str, false);
                 isEnter = true;
+                retTimer = millis();
                 break;
               case B_INPUT_CHANGE:
                 PrintDisplay();
@@ -96,7 +113,7 @@ void ButtonAction(SavedData_t * saved)
             sprintf(str, "FW Ver: %s", VERSION_STRING);
             LCD_Print(0,0, str, true);
             delay(1500);
-            PrintDisplay(); 
+            PrintDisplay();      
             break;
           case B_FILTER_CHANGE:
             
@@ -107,6 +124,7 @@ void ButtonAction(SavedData_t * saved)
               len++;
             } while (len <= 16);
             LCD_Print(0,1, str, false);
+            retTimer = millis();
             break;
           case B_INPUT_CHANGE:
             sprintf(str, "Input: %s", inputStr[SetInput(saved, false)]);
@@ -116,7 +134,7 @@ void ButtonAction(SavedData_t * saved)
               len++;
             } while (len <= 16);
             LCD_Print(0,1, str, false);
-            
+            retTimer = millis();
             break;
         }
       }
