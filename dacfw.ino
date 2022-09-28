@@ -24,15 +24,19 @@ void setup() {
   
   GetDACDataSerial();
   
-  saved.all16 = EEPROM.read(SAVED_ADDR);
-  if (saved.all16 == 0xFFFFFFFF)
+  saved.bytes.filter = EEPROM.read(SAVED_ADDR);
+  saved.bytes.input = EEPROM.read(SAVED_ADDR+1);
+  if (saved.bytes.filter == 0xFF)
   {
     saved.bytes.filter = GetGConfig()->FilterNum;
-    EEPROM.write(SAVED_ADDR, saved.all16);
+    saved.bytes.filter = GetGConfig()->inputType;
+    EEPROM.write(SAVED_ADDR, saved.bytes.filter);
+    EEPROM.write(SAVED_ADDR+1, saved.bytes.input);
   } else
   {
     // Put saved data to struct and DAC
     SetFilter(&saved, true);
+    SetInput(&saved, true);
   }
 
 }

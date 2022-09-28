@@ -1,9 +1,7 @@
 #include "defs.h"
 
-
-#define FILTER_INDEX_OFFSET 4
-
 char * filters[] = {"linear", "mixed", "minimum", "soft"};
+
 
 
 #ifdef USE_MONITOR
@@ -63,9 +61,43 @@ void SetMonitor(void)
   
 }
 #endif // USE_MONITOR
-void SetFilter(SavedData_t * saved, bool isFirst)
+
+unsigned int SetInput(SavedData_t * saved, bool isFirst)
 {
- static unsigned char filter_num;
+ unsigned char input_num;
+ char comm[5]={0};
+ input_num = GetGConfig()->inputType;
+ if (saved->bytes.input != input_num)
+ {
+    if (isFirst)
+    {
+      input_num = saved->bytes.input;
+    }
+ }
+ if (!isFirst)
+ {
+    input_num++;
+ }
+ 
+ if (input_num > I_AUTO)
+ {
+   input_num = I_USB;
+ }
+ 
+ sprintf(comm, "I%d",input_num);
+ PrintSerialLine(comm);
+ if (!isFirst)
+ {
+   saved->bytes.input = input_num;
+   EEPROM.update(SAVED_ADDR+1,saved->bytes.input);
+ }
+
+ return input_num; 
+}
+
+unsigned int SetFilter(SavedData_t * saved, bool isFirst)
+{
+ unsigned char filter_num;
  char comm[5]={0};
  filter_num = GetGConfig()->FilterNum;
  if (saved->bytes.filter != filter_num)
@@ -90,7 +122,8 @@ void SetFilter(SavedData_t * saved, bool isFirst)
  if (!isFirst)
  {
    saved->bytes.filter = filter_num;
-   EEPROM.update(SAVED_ADDR,saved->all16);
+   EEPROM.update(SAVED_ADDR,saved->bytes.filter);
  }
- 
+
+ return filter_num; 
 }

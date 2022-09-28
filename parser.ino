@@ -4,6 +4,7 @@ extern "C"{
 
 
 Config_t gConfig = {0};
+extern Button_t gBConf;
 
 // Get
 Config_t *GetGConfig(void)
@@ -175,20 +176,22 @@ void GetDACDataSerial()
   {
     
    parser = GetParse(GetSerial());
-   switch (parser)
-    {
-      case FOUND_FIL:
-        printFilter(gConfig.FilterNum);
-        break;
-      case FOUND_STR:
-        printStream(gConfig.streamValue);
-        break;
-      case FOUND_IN:
-        printInput(gConfig.inputType);
-        break;
-      default:
-        break;
-    }
-
+   if (gBConf == B_MAX_VALUE)
+   {
+     switch (parser)
+      {
+        case FOUND_FIL:
+          printFilter(gConfig.FilterNum);
+          break;
+        case FOUND_STR:
+          printStream(gConfig.streamValue);
+          break;
+        case FOUND_IN:
+          printInput(gConfig.inputType);
+          break;
+        default:
+          break;
+      }
+   }
   } // while
 }

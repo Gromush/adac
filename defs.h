@@ -1,7 +1,7 @@
 #ifndef _DEFS_H
 #define _DEFS_H
 
-#define VERSION_STRING "V1.0.0" // current FW code version
+#define VERSION_STRING "V1.0.1" // current FW code version
 
 #define SERIAL_SPEED 115200
 
@@ -17,7 +17,11 @@
 #define DAC_PWR_ENABLE 4
 #define BUTTON_FILTER  5
 
-#define BUTTON_DEBOUNCE_TIMEOUT 50 // 100 ms
+#define FILTER_INDEX_OFFSET 4
+
+#define BUTTON_DEBOUNCE_TIMEOUT   50   // 50 ms
+#define BUTTON_LONG_PRESS_TIMEOUT 1000 // 1 s
+
 #define MAX_FILTER_NUM           7 // last filter
 #define MIN_FILTER_NUM           4 // first filter
 
@@ -30,7 +34,10 @@
 
 typedef enum
 {
-
+  I_USB,
+  I_TOS,
+  I_COAX,
+  I_AUTO
 } Input_Type_t;
 
 typedef enum
@@ -88,6 +95,12 @@ typedef union
 } SavedData_t; 
 
 
+typedef enum 
+{
+  B_FILTER_CHANGE,
+  B_INPUT_CHANGE,
+  B_MAX_VALUE
+} Button_t;
 
 
 #endif
