@@ -6,6 +6,8 @@ extern "C"{
 SavedData_t saved = {0};
 
 void setup() {
+  saved.bytes.filter = EEPROM.read(SAVED_ADDR);
+  saved.bytes.input = EEPROM.read(SAVED_ADDR+1);
   SetupLed();
   SetMainPwrOn();
   InitLCD();
@@ -19,13 +21,7 @@ void setup() {
   digitalWrite(DAC_PWR_ENABLE, HIGH);
   SetPwrRdyOn();
   WaitSerialChar(INFINIT);
-
-  LCD_Clear();
-  
   GetDACDataSerial();
-  
-  saved.bytes.filter = EEPROM.read(SAVED_ADDR);
-  saved.bytes.input = EEPROM.read(SAVED_ADDR+1);
   if (saved.bytes.filter == 0xFF)
   {
     saved.bytes.filter = GetGConfig()->FilterNum;
@@ -38,7 +34,8 @@ void setup() {
     SetFilter(&saved, true);
     SetInput(&saved, true);
   }
-
+  LCD_Clear();
+  GetDACDataSerial();
 }
 
 void loop() {

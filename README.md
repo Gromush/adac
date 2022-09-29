@@ -43,3 +43,6 @@ Second long press (1 second) - set input mode
         Short press - change input by cycle
 Third long press (1 second) - return to main window 
 
+Version 1.0.2 
+- Automatic return to main mode after 30s idle time from changing modes
+
