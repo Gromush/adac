@@ -6,14 +6,17 @@ extern "C"{
 SavedData_t saved = {0};
 
 void setup() {
+  char str[16];
+  sprintf(str, "FW:  %s", VERSION_STRING);
   saved.bytes.filter = EEPROM.read(SAVED_ADDR);
   saved.bytes.input = EEPROM.read(SAVED_ADDR+1);
   SetupLed();
   SetMainPwrOn();
   InitLCD();
   ButtonInit();
-  LCD_Print(0,0,"A-DAC starting...", false);
-  LCD_Print(3,1, "Please wait", false);
+  LCD_Print(0,0, "Starting...", true);
+  LCD_Print(0,1, str,false);
+  LCD_PritLogo(12,0);
   InitSerial();
   
   //DAC ON
@@ -21,7 +24,9 @@ void setup() {
   digitalWrite(DAC_PWR_ENABLE, HIGH);
   SetPwrRdyOn();
   WaitSerialChar(INFINIT);
+  
   GetDACDataSerial();
+  
   if (saved.bytes.filter == 0xFF)
   {
     saved.bytes.filter = GetGConfig()->FilterNum;
@@ -35,6 +40,7 @@ void setup() {
     SetInput(&saved, true);
   }
   LCD_Clear();
+  LCD_PrintSmallLogo(0,0);
   GetDACDataSerial();
 }
 
