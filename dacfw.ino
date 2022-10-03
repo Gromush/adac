@@ -5,9 +5,11 @@ extern "C"{
 
 SavedData_t saved = {0};
 
+extern Button_t gBConf;
+char VersionString[16];
 void setup() {
-  char str[16];
-  sprintf(str, "FW:  %s", VERSION_STRING);
+  
+  sprintf(VersionString, "FW:  %s", VERSION_STRING);
   saved.bytes.filter = EEPROM.read(SAVED_ADDR);
   saved.bytes.input = EEPROM.read(SAVED_ADDR+1);
   SetupLed();
@@ -15,7 +17,7 @@ void setup() {
   InitLCD();
   ButtonInit();
   LCD_Print(0,0, "Starting...", true);
-  LCD_Print(0,1, str,false);
+  LCD_Print(0,1, VersionString,false);
   LCD_PritLogo(12,0);
   InitSerial();
   
@@ -47,7 +49,7 @@ void setup() {
 void loop() {
  
   ButtonAction(&saved);
-  BlinkRdyLed((*GetGBConf()));
+  BlinkRdyLed(gBConf);
   GetDACDataSerial();
   ReturnToMainMode();
   

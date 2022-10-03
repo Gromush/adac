@@ -16,11 +16,6 @@ void SetMainPwrOn(void)
   digitalWrite(LED_MAIN_PWR, HIGH);
 }
 
-void SetMainPwrOff(void)
-{
-  digitalWrite(LED_MAIN_PWR, LOW);
-}
-
 void SetPwrRdyOn(void)
 {
   digitalWrite(LED_PWR_RDY, HIGH);
@@ -46,9 +41,7 @@ void BlinkRdyLed(Button_t gBConf)
    {
      digitalWrite(LED_PWR_RDY, !digitalRead(LED_PWR_RDY));
    }
-  }
-  
-  if (gBConf == B_INPUT_CHANGE)
+  } else
   {
     if (IsTimeExpired(LED_INPUT_MODE_BLINK_TIMEOUT))
    {

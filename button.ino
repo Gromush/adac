@@ -3,19 +3,11 @@ extern "C"{
 }
 
 extern char *filters[];
+extern char VersionString[16];
 char * inputStr[] = {"USB", "TOS", "Coax", "Auto"}; 
-#ifdef USE_MONITOR
-MonStates_t gMonState = MON_MAX_VALUE;
-#endif
 
 Button_t gBConf;
 unsigned int retTimer=0;
-
-
-Button_t *GetGBConf(void)
-{
-  return &gBConf;
-}
 
 void ButtonInit(void)
 {
@@ -25,9 +17,11 @@ void ButtonInit(void)
 
 void ReturnToMainMode(void)
 {
+  unsigned int exittime;
   if (retTimer != 0)
   {
-    if ((millis() - retTimer) > RETURN_MAIN_MODE_TIMER)
+    exittime = millis();
+    if ((exittime - retTimer) > RETURN_MAIN_MODE_TIMER)
     {
        PrintDisplay();
        retTimer = 0;
@@ -94,8 +88,6 @@ void ButtonAction(SavedData_t * saved)
                 break;
              }
            }
-
-           
         }
      }
      
@@ -106,7 +98,6 @@ void ButtonAction(SavedData_t * saved)
     if (isEnter == true)
     {
       isEnter = false;
-      
     } else
     {
       // short time unpressing
@@ -116,29 +107,24 @@ void ButtonAction(SavedData_t * saved)
         switch (gBConf)
         {
           case B_MAX_VALUE: // short press only - show version
-            sprintf(str, "FW Ver: %s", VERSION_STRING);
-            LCD_Print(0,0, str, true);
+            
+            LCD_Print(0,0, VersionString, true);
             delay(1500);
             PrintDisplay();      
             break;
           case B_FILTER_CHANGE:
-            
             sprintf(str, "Filter: %s", filters[SetFilter(saved, false) - FILTER_INDEX_OFFSET]);
             len = strlen(str);
-            do{
-              str[len] = ' ';
-              len++;
-            } while (len <= 16);
+            memcpy(&str[len],32,LCD_SYMBOLS_NUM-len);
+            str[LCD_SYMBOLS_NUM] = '\0';
             LCD_Print(0,1, str, false);
             retTimer = millis();
             break;
           case B_INPUT_CHANGE:
             sprintf(str, "Input: %s", inputStr[SetInput(saved, false)]);
             len = strlen(str);
-            do{
-              str[len] = ' ';
-              len++;
-            } while (len <= 16);
+            memcpy(&str[len],32,LCD_SYMBOLS_NUM-len);
+            str[LCD_SYMBOLS_NUM] = '\0';
             LCD_Print(0,1, str, false);
             retTimer = millis();
             break;

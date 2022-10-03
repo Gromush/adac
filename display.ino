@@ -99,9 +99,6 @@ void LCD_PritLogo(int x, int y)
 
 
 
-
-
-
 void InitLCD(void)
 {
   lcd.init();
@@ -120,17 +117,7 @@ void LCD_Print(int x, int y, char * txt, bool toClear)
   lcd.setCursor(x,y); 
   lcd.print(txt);
 }
-#if 0
-void LCD_ShiftLeft(void)
-{
-  lcd.scrollDisplayLeft();
-}
 
-void LCD_ShiftRight(void)
-{
-  lcd.scrollDisplayRight();
-}
-#endif //0
 
 void LCD_Clear(void)
 {

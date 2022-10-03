@@ -1,7 +1,7 @@
 #ifndef _DEFS_H
 #define _DEFS_H
 
-#define VERSION_STRING "V1.0.4" // current FW code version
+#define VERSION_STRING "V1.0.6" // current FW code version
 
 #define SERIAL_SPEED 115200
 
@@ -21,20 +21,15 @@
 
 #define BUTTON_DEBOUNCE_TIMEOUT   50   // 50 ms
 #define BUTTON_LONG_PRESS_TIMEOUT 1000 // 1 s
-#define RETURN_MAIN_MODE_TIMER    30000 // 30s
+#define RETURN_MAIN_MODE_TIMER    15000 // 15s
 
-#define LED_FILTER_MODE_BLINK_TIMEOUT  600
-#define LED_INPUT_MODE_BLINK_TIMEOUT   300
+#define LED_FILTER_MODE_BLINK_TIMEOUT  200
+#define LED_INPUT_MODE_BLINK_TIMEOUT   100
 
 #define MAX_FILTER_NUM           7 // last filter
 #define MIN_FILTER_NUM           4 // first filter
 
 #define SAVED_ADDR               0
-#ifdef USE_MONITOR
-
-#define MONITOR_ON_STR           "+++"
-#define MONITOR_OFF_STR          "exit"
-#endif
 
 typedef enum
 {
@@ -52,17 +47,6 @@ typedef enum
   PARSE_INPUT,
 
 } States_t;
-
-#ifdef USE_MONITOR
-typedef enum 
-{
-  MON_START,
-  MON_SEND_F,
-  MON_EXIT,
-  MON_WAIT_NEXT_COMMAND,
-  MON_MAX_VALUE
-} MonStates_t;
-#endif
 
 typedef enum
 {

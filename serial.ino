@@ -29,9 +29,7 @@ bool WaitSerialChar(int timeout)
 
 char GetSerial(void)
 {
-  
  return Serial.read(); 
-
 }
 
 void PrintSerial(char * ch)

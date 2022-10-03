@@ -88,8 +88,6 @@ ParseResult_t GetParse(char *ch)
     case START: 
       inString = "";
       currentCounter = 0;
-      
-      
       if (ch == 'F')
       {
         gState = PARSE_FILTER;
@@ -97,14 +95,13 @@ ParseResult_t GetParse(char *ch)
       }
       if (ch == 'I')
       {
-
         gState = PARSE_INPUT;
+        break;
       }
       if (ch == 'L')
       {
         gState = PARSE_STREAM;
-      }
-      
+      } 
       break;
       
     case PARSE_FILTER:
@@ -116,8 +113,7 @@ ParseResult_t GetParse(char *ch)
       }
       if (currentCounter > 1)
       {
-         gState = START; // big part after F not filter output
-         
+         gState = START; // big part after F not filter output   
          return FOUND_NONE;
       }
       gConfig.FilterNum = inString.toInt();
@@ -153,7 +149,6 @@ ParseResult_t GetParse(char *ch)
       if (currentCounter > 4)
       {
          gState = START; // big part after F not filter output
-         
          return FOUND_NONE;
       }
       gConfig.streamValue = inString.toInt();
