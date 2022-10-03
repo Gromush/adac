@@ -29,7 +29,7 @@ void SetPwrRdyOff(void)
 void BlinkRdyLed(Button_t gBConf)
 {
   
-  if (gBConf == B_MAX_VALUE) // np blink set to off
+  if (gBConf == B_MAX_VALUE) // no blink set to off
   {
     SetPwrRdyOn();
     return;
