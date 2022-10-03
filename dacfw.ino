@@ -47,7 +47,29 @@ void setup() {
 void loop() {
  
   ButtonAction(&saved);
+  BlinkRdyLed((*GetGBConf()));
   GetDACDataSerial();
   ReturnToMainMode();
   
+}
+
+bool IsTimeExpired(unsigned int timeout)
+{
+  static unsigned int ts = 0, te = 0;
+  bool result = false;
+    
+  if (ts ==0)
+  {
+    ts = millis();
+  } else
+  {
+    te = millis();
+    if ((te-ts) > timeout)
+    {
+      ts = 0;
+      te = 0;
+      result = true;
+    }
+  }
+  return result;
 }
