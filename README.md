@@ -57,4 +57,7 @@ Small optimization and bug fixes
 
  Version 1.0.7
  - bug fix with set up input when set to Auto mode has limit to set USB input from the list when USB cable connected.
+
+ Version 1.0.8
+ - fix DSD/PCM detection
  
