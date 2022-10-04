@@ -55,4 +55,6 @@ Small optimization and bug fixes
  - fixed bug with millis() used inside if() condition (Arduino issue periodically return always true)
  - speed optimization (logical) avoid check impossible cases
 
+ Version 1.0.7
+ - bug fix with set up input when set to Auto mode has limit to set USB input from the list when USB cable connected.
  

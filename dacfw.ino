@@ -10,8 +10,8 @@ char VersionString[16];
 void setup() {
   
   sprintf(VersionString, "FW:  %s", VERSION_STRING);
-  saved.bytes.filter = EEPROM.read(SAVED_ADDR);
-  saved.bytes.input = EEPROM.read(SAVED_ADDR+1);
+  saved.bytes.filter = EEPROM.read(SAVED_ADDR_FILTER);
+  saved.bytes.input = EEPROM.read(SAVED_ADDR_INPUT);
   SetupLed();
   SetMainPwrOn();
   InitLCD();
@@ -20,30 +20,28 @@ void setup() {
   LCD_Print(0,1, VersionString,false);
   LCD_PritLogo(12,0);
   InitSerial();
-  
+  GetGConfig()->inputType = UNINIT_VAL;
   //DAC ON
   pinMode(DAC_PWR_ENABLE,OUTPUT);
   digitalWrite(DAC_PWR_ENABLE, HIGH);
   SetPwrRdyOn();
   WaitSerialChar(INFINIT);
-  
   GetDACDataSerial();
   
   if (saved.bytes.filter == 0xFF)
   {
     saved.bytes.filter = GetGConfig()->FilterNum;
     saved.bytes.filter = GetGConfig()->inputType;
-    EEPROM.write(SAVED_ADDR, saved.bytes.filter);
-    EEPROM.write(SAVED_ADDR+1, saved.bytes.input);
+    EEPROM.write(SAVED_ADDR_FILTER, saved.bytes.filter);
+    EEPROM.write(SAVED_ADDR_INPUT, saved.bytes.input);
   } else
   {
     // Put saved data to struct and DAC
     SetFilter(&saved, true);
     SetInput(&saved, true);
   }
-  LCD_Clear();
-  LCD_PrintSmallLogo(0,0);
   GetDACDataSerial();
+  PrintDisplay();
 }
 
 void loop() {

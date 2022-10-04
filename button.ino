@@ -18,10 +18,20 @@ void ButtonInit(void)
 void ReturnToMainMode(void)
 {
   unsigned int exittime;
+  unsigned int wrapValue=0;
   if (retTimer != 0)
   {
     exittime = millis();
-    if ((exittime - retTimer) > RETURN_MAIN_MODE_TIMER)
+    if (exittime < retTimer) /// wrap millis in uint16 value
+    {
+      wrapValue = 0xFFFF - retTimer;
+      wrapValue += exittime;
+    } else
+    {
+      wrapValue = exittime - retTimer;
+    }
+    
+    if (wrapValue > RETURN_MAIN_MODE_TIMER)
     {
        PrintDisplay();
        retTimer = 0;
@@ -76,7 +86,7 @@ void ButtonAction(SavedData_t * saved)
               case B_FILTER_CHANGE:
                 gBConf = B_INPUT_CHANGE;
                 LCD_Print(0,0, "Input mode ON.", true);
-                sprintf(str, "Input: %s", inputStr[GetGConfig()->inputType]);
+                sprintf(str, "Input: %s", inputStr[saved->bytes.input]);
                 LCD_Print(0,1, str, false);
                 isEnter = true;
                 retTimer = millis();

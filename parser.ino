@@ -3,7 +3,7 @@ extern "C"{
 }
 
 
-Config_t gConfig = {0};
+Config_t gConfig = {UNINIT_VAL};
 extern Button_t gBConf;
 
 // Get
@@ -15,6 +15,7 @@ Config_t *GetGConfig(void)
 
 void PrintDisplay(void)
 {
+  
   LCD_Clear();
   LCD_PrintSmallLogo(0,0);
   printFilter(gConfig.FilterNum);

@@ -6,9 +6,19 @@ unsigned int SetInput(SavedData_t * saved, bool isFirst)
 {
   unsigned char input_num;
   char comm[5]={0};
+  
   input_num = GetGConfig()->inputType;
   if (isFirst)
   {
+    if (saved->bytes.input == I_AUTO) 
+    {
+      // first time review input will always changed to active locked. 
+      // not required to apply new filter at this time
+      // just return with saved input first time
+      
+      return saved->bytes.input;
+    }
+    
     if (saved->bytes.input != input_num)
     {
       input_num = saved->bytes.input;
@@ -19,6 +29,11 @@ unsigned int SetInput(SavedData_t * saved, bool isFirst)
   }
   else
   {
+    if (saved->bytes.input == I_AUTO)
+    {
+      input_num = I_AUTO;
+    }
+      
     input_num++;
     if (input_num > I_AUTO)
     {
@@ -31,7 +46,7 @@ unsigned int SetInput(SavedData_t * saved, bool isFirst)
  if (!isFirst)
  {
    saved->bytes.input = input_num;
-   EEPROM.update(SAVED_ADDR+1,saved->bytes.input);
+   EEPROM.update(SAVED_ADDR_INPUT  ,saved->bytes.input);
  }
  return input_num; 
 }
@@ -64,7 +79,7 @@ unsigned int SetFilter(SavedData_t * saved, bool isFirst)
  if (!isFirst)
  {
    saved->bytes.filter = filter_num;
-   EEPROM.update(SAVED_ADDR,saved->bytes.filter);
+   EEPROM.update(SAVED_ADDR_FILTER, saved->bytes.filter);
  }
 
  return filter_num; 
