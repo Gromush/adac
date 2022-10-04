@@ -3,7 +3,7 @@ extern "C"{
 }
 
 
-Config_t gConfig = {UNINIT_VAL};
+Config_t gConfig = {0};
 extern Button_t gBConf;
 
 // Get
@@ -33,7 +33,14 @@ void printStream(int num)
     sprintf(str, "PCM %dK",num);
   } else
   {
-    sprintf(str, "DSD %dM",num);
+    if (num == 2)
+    {
+      LCD_Print(0,1, "DSD64", false);
+    } else
+    {
+      LCD_Print(0,1, "DSD128", false);
+    }
+    return;
   }
   LCD_Print(0,1, str, false);
   
@@ -153,6 +160,14 @@ ParseResult_t GetParse(char *ch)
          return FOUND_NONE;
       }
       gConfig.streamValue = inString.toInt();
+      
+      if ((gConfig.streamValue >= 44) || (gConfig.streamValue == 0))
+      {
+        gConfig.streamType = S_PCM;
+      } else
+      {
+        gConfig.streamType = S_DSD;
+      }
       gState = START;
       return FOUND_STR;
           

@@ -1,7 +1,7 @@
 #ifndef _DEFS_H
 #define _DEFS_H
 
-#define VERSION_STRING "V1.0.7" // current FW code version
+#define VERSION_STRING "V1.0.8" // current FW code version
 
 #define SERIAL_SPEED 115200
 
