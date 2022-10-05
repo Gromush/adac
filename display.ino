@@ -40,64 +40,149 @@ byte logo_down[] = {
   B00000
  };
 
-byte s_lg_1[] = {
-  B01100,
-  B01100,
-  B11110,
+ byte indN[] = {
   B00000,
-  B00011,
-  B00011,
-  B11101,
-  B11101
+  B00000,
+  B00000,
+  B11111,
+  B11111,
+  B00000,
+  B00000,
+  B00000
  };
 
- byte s_lg_2[] = {
-  B00110,
-  B00110,
-  B01111,
+ byte indUp[] = {
+  B11111,
+  B11111,
+  B11111,
   B00000,
-  B11000,
-  B11000,
-  B10111,
-  B10111
+  B00000,
+  B11111,
+  B11111,
+  B11111
  };
+
+  byte indL[] = {
+  B00000,
+  B00000,
+  B10000,
+  B10000,
+  B10000,
+  B10000,
+  B11110,
+  B00000
+ }; 
+ 
+ byte indR[] = {
+  B00000,
+  B11100,
+  B10010,
+  B11100,
+  B11000,
+  B10100,
+  B10010,
+  B00000
+ };
+ 
 void LCD_CreateCustomLogo()
 {
-  lcd.createChar(0,logo_up);
-  lcd.createChar(1,logo_down);
-  lcd.createChar(2,logo_c);
-  lcd.createChar(3,s_lg_1);
-  lcd.createChar(4,s_lg_2);
+  lcd.createChar(LOGO_UP,logo_up);
+  lcd.createChar(LOGO_DWN,logo_down);
+  lcd.createChar(LOGO_C,logo_c);
+  lcd.createChar(IND_CNAR_NORM,indN);
+  lcd.createChar(IND_CNAR_MAX, indUp);
+  lcd.createChar(IND_CNAR_L,indL);
+  lcd.createChar(IND_CNAR_R, indR);
 }
-
-
-void LCD_PrintSmallLogo(int x, int y)
-{
-  lcd.setCursor(x,y);
-  lcd.write(3);
-  lcd.setCursor(x+1,y);
-  lcd.write(4);
-}
-
-
-
 
 void LCD_PritLogo(int x, int y)
 {
   lcd.setCursor(x,y);
-  lcd.write(0);
+  lcd.write(LOGO_UP);
   lcd.setCursor(x+2,y);
-  lcd.write(0);
+  lcd.write(LOGO_UP);
   lcd.setCursor(x+1,y+1);
-  lcd.write(1);
+  lcd.write(LOGO_DWN);
   lcd.setCursor(x,y+1);
-  lcd.write(2);
+  lcd.write(LOGO_C);
   lcd.setCursor(x+2,y+1);
-  lcd.write(2);
+  lcd.write(LOGO_C);
   
 }
 
+void IndicatorAnalogs(void)
+{
+  unsigned int left, right;
+  static unsigned int maxl=0, maxr=0;
+  unsigned int xl=1,xr=1, xlup=0, xrup=0;
+  byte exitFlag=0;
 
+  if (GetGConfig()->mode == MODE_NORMAL)
+  {
+    return;
+  }
+  //char ss[5];
+  lcd.setCursor(0,0);
+  lcd.write(IND_CNAR_L);
+  lcd.setCursor(0,1);
+  lcd.write(IND_CNAR_R);
+  
+  left = analogRead(LEFT_CHANNEL);
+  right = analogRead(RIGHT_CHANNEL);
+  if (maxl< left) { maxl=left;}
+  if (maxr< right) { maxr=right;}
+  if (left > IND_MAX_VALUE) left = IND_MAX_VALUE;
+  if (right > IND_MAX_VALUE) right = IND_MAX_VALUE;
+  xlup = left / IND_DELIMITER;
+  xrup = right / IND_DELIMITER;
+//  sprintf(ss, "%d", xlup);
+//  LCD_Print(0,0, ss, false);
+// sprintf(ss, "%d", xrup);
+// LCD_Print(0,1, ss, false);
+
+  while(exitFlag!=3)
+  {
+    lcd.setCursor(xl,0);
+    if (xl<=xlup)
+    {
+      if (xl >= (IND_MAX_POINT-3))
+      {
+        lcd.write(IND_CNAR_MAX);
+      } else {
+      lcd.write(IND_CNAR_NORM);
+      }
+    } else
+    {
+      lcd.print(" ");
+    }
+    lcd.setCursor(xr,1);
+    if (xr<=xrup)
+    {
+      if (xr >= (IND_MAX_POINT-3))
+      {
+        lcd.write(IND_CNAR_MAX);
+      } else{
+        lcd.write(IND_CNAR_NORM);
+      }
+
+    } else
+    {
+      lcd.print(" ");
+    }
+    if (xl>=IND_MAX_POINT)
+    {
+      exitFlag |= 1;
+    }
+    if (xr>=IND_MAX_POINT)
+    {
+      exitFlag |= (1<<1);
+    }
+    xl++;
+    xr++;
+    
+  }
+
+}
 
 void InitLCD(void)
 {

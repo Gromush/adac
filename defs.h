@@ -1,7 +1,7 @@
 #ifndef _DEFS_H
 #define _DEFS_H
 
-#define VERSION_STRING "V1.0.8" // current FW code version
+#define VERSION_STRING "V1.1.0" // current FW code version
 
 #define SERIAL_SPEED 115200
 
@@ -16,6 +16,30 @@
 #define LED_PWR_RDY    3
 #define DAC_PWR_ENABLE 4
 #define BUTTON_FILTER  5
+
+// Analog pins
+#define RIGHT_CHANNEL A2
+#define LEFT_CHANNEL  A1
+#define BRIGHTNESS    A0
+#define LOGO_UP       0
+#define LOGO_DWN      1
+#define LOGO_C        2
+
+#define IND_CNAR_L    3
+#define IND_CNAR_R    4
+#define IND_CNAR_NORM 5
+#define IND_CNAR_MAX  6
+
+
+#define MODE_MUSIC_LEVEL    25
+#define MODE_ARR_SIZE       70
+
+// Indicators
+#define IND_MAX_VALUE 795
+#define IND_MAX_POINT  16
+#define IND_DELIMITER  53
+
+#define BRIGHTNESS_VAL      500 
 
 #define FILTER_INDEX_OFFSET 4
 #define UNINIT_VAL          0x55
@@ -64,12 +88,20 @@ typedef enum {
 } Streams_t;
 
 
+typedef enum
+{
+  MODE_NORMAL,
+  MODE_MUSIC,
+  MODE_AUTO // reserved for next FW versions
+} Mode_t;
+
 typedef struct
 {
-  Streams_t streamType;
-  int streamValue;
-  unsigned char FilterNum;
-  Input_Type_t inputType;
+  Streams_t      streamType;
+  int            streamValue;
+  unsigned char  FilterNum;
+  Input_Type_t   inputType;
+  Mode_t         mode;
 } Config_t;
 
 // EEPROM

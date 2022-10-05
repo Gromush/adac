@@ -17,7 +17,6 @@ void PrintDisplay(void)
 {
   
   LCD_Clear();
-  LCD_PrintSmallLogo(0,0);
   printFilter(gConfig.FilterNum);
   printStream(gConfig.streamValue);
   printInput(gConfig.inputType);
@@ -51,7 +50,7 @@ void printFilter(int num)
 {
   char str[40]={0};
   int len,i;
-  sprintf(str, "Fltr: %s",filters[num-FILTER_INDEX_OFFSET]);
+  sprintf(str, "Filter: %s",filters[num-FILTER_INDEX_OFFSET]);
   len = strlen(str);
   
   do{
@@ -59,7 +58,7 @@ void printFilter(int num)
     len++;
   } while (len <= 16);
  
-  LCD_Print(3,0, str, false);
+  LCD_Print(0,0, str, false);
 }
 
 // print active input
@@ -188,7 +187,9 @@ void GetDACDataSerial()
   {
     
    parser = GetParse(GetSerial());
-   if (gBConf == B_MAX_VALUE)
+
+  
+   if ( (gBConf == B_MAX_VALUE) && (GetGConfig()->mode == MODE_NORMAL) )
    {
      switch (parser)
       {

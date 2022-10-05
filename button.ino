@@ -33,9 +33,12 @@ void ReturnToMainMode(void)
     
     if (wrapValue > RETURN_MAIN_MODE_TIMER)
     {
-       PrintDisplay();
-       retTimer = 0;
-       gBConf = B_MAX_VALUE;
+       if (GetGConfig()->mode == MODE_NORMAL) 
+       {
+          PrintDisplay();
+          retTimer = 0;
+          gBConf = B_MAX_VALUE;
+       }
     }    
   }
 }
@@ -118,9 +121,17 @@ void ButtonAction(SavedData_t * saved)
         {
           case B_MAX_VALUE: // short press only - show version
             
-            LCD_Print(0,0, VersionString, true);
-            delay(1500);
-            PrintDisplay();      
+            //LCD_Print(0,0, VersionString, true);
+            //delay(1500);
+            if (GetGConfig()->mode == MODE_NORMAL)
+            {
+              GetGConfig()->mode = MODE_MUSIC;
+            } else
+            {
+              GetGConfig()->mode = MODE_NORMAL;
+              PrintDisplay();
+            }
+                  
             break;
           case B_FILTER_CHANGE:
             sprintf(str, "Filter: %s", filters[SetFilter(saved, false) - FILTER_INDEX_OFFSET]);
