@@ -60,4 +60,17 @@ Small optimization and bug fixes
 
  Version 1.0.8
  - fix DSD/PCM detection
- 
+
+Version 1.1.0
+- Add pin to use analog output to set backlight on 16/2 LCD only when all power up HW finished to avoid power up blinking
+- Preliminary released mode for emulation analog indicators as on old amps.
+Levels looking like:
+L ==========
+R =======
+All symbols are configurable.
+Input signals taken from DAC second outputs with diodes.
+One click now used to change mode from normal looking and mode indicators.
+: known limitations :
+Currently this feature is not support long button pressing to change filters and inputs. Next update will provide the small changes to fix this limitation
+
+  
