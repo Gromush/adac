@@ -37,7 +37,7 @@ void setup() {
   if (saved.bytes.filter == 0xFF)
   {
     saved.bytes.filter = GetGConfig()->FilterNum;
-    saved.bytes.filter = GetGConfig()->inputType;
+    saved.bytes.input = GetGConfig()->inputType;
     EEPROM.write(SAVED_ADDR_FILTER, saved.bytes.filter);
     EEPROM.write(SAVED_ADDR_INPUT, saved.bytes.input);
   } else
