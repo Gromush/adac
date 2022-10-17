@@ -73,4 +73,8 @@ One click now used to change mode from normal looking and mode indicators.
 : known limitations :
 Currently this feature is not support long button pressing to change filters and inputs. Next update will provide the small changes to fix this limitation
 
-  
+Version 1.1.1
+- Indicators update
+
+Working with more accurate calculation of value
+Has max value label doungraded slowly like was on vintage indicators
