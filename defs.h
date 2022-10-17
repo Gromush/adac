@@ -25,15 +25,15 @@
 #define LOGO_DWN      1
 #define LOGO_C        2
 
-#define IND_CNAR_L    3
-#define IND_CNAR_R    4
+
+#define IND_CHAR_M    4
 #define IND_CNAR_NORM 5
-#define IND_CNAR_MAX  6
 
+#define IND_CNAR_E    7
 
+#define IND_MAX_TIMEOUT 250 // 500 ms
 #define MODE_MUSIC_LEVEL    25
-#define MODE_ARR_SIZE       70
-
+#define MODE_ARR_SIZE       3 /// Using 4 bytes array to provide value for level more accurate
 // Indicators
 #define IND_MAX_VALUE 795
 #define IND_MAX_POINT  16

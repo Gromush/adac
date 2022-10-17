@@ -41,48 +41,39 @@ byte logo_down[] = {
  };
 
  byte indN[] = {
+  B00001,
   B00000,
   B00000,
+  B11011,
+  B11011,
   B00000,
-  B11111,
-  B11111,
   B00000,
-  B00000,
-  B00000
+  B00001
  };
 
- byte indUp[] = {
-  B11111,
-  B11111,
-  B11111,
+  byte indMax[] = {
+  B00001,
   B00000,
   B00000,
-  B11111,
-  B11111,
-  B11111
- };
-
-  byte indL[] = {
+  B00101,
+  B00101,
   B00000,
   B00000,
-  B10000,
-  B10000,
-  B10000,
-  B10000,
-  B11110,
-  B00000
+  B00001
  }; 
  
- byte indR[] = {
+
+
+  byte indE[] = {
+  B00001,
   B00000,
-  B11100,
-  B10010,
-  B11100,
-  B11000,
-  B10100,
-  B10010,
-  B00000
- };
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B00000,
+  B00001
+ }; 
  
 void LCD_CreateCustomLogo()
 {
@@ -90,9 +81,10 @@ void LCD_CreateCustomLogo()
   lcd.createChar(LOGO_DWN,logo_down);
   lcd.createChar(LOGO_C,logo_c);
   lcd.createChar(IND_CNAR_NORM,indN);
-  lcd.createChar(IND_CNAR_MAX, indUp);
-  lcd.createChar(IND_CNAR_L,indL);
-  lcd.createChar(IND_CNAR_R, indR);
+  lcd.createChar(IND_CNAR_E, indE);
+  lcd.createChar(IND_CHAR_M, indMax);
+  
+  
 }
 
 void LCD_PritLogo(int x, int y)
@@ -113,62 +105,134 @@ void LCD_PritLogo(int x, int y)
 void IndicatorAnalogs(void)
 {
   unsigned int left, right;
-  static unsigned int maxl=0, maxr=0;
   unsigned int xl=1,xr=1, xlup=0, xrup=0;
+  static unsigned int maxL=0, maxR=0;
   byte exitFlag=0;
+  static unsigned int L[MODE_ARR_SIZE]={0}, R[MODE_ARR_SIZE]={0};
+  static unsigned int index=0;
+  int i;
+  static unsigned int MR=0, ML=0;
+
 
   if (GetGConfig()->mode == MODE_NORMAL)
   {
     return;
   }
-  //char ss[5];
+
   lcd.setCursor(0,0);
-  lcd.write(IND_CNAR_L);
+  lcd.print("L");
   lcd.setCursor(0,1);
-  lcd.write(IND_CNAR_R);
+  lcd.print("R");
   
   left = analogRead(LEFT_CHANNEL);
   right = analogRead(RIGHT_CHANNEL);
-  if (maxl< left) { maxl=left;}
-  if (maxr< right) { maxr=right;}
-  if (left > IND_MAX_VALUE) left = IND_MAX_VALUE;
-  if (right > IND_MAX_VALUE) right = IND_MAX_VALUE;
+  
+  /* Start to get avarage value */
+  L[index] = left;
+  R[index] = right;
+  index++;
+  
+  if (index >= MODE_ARR_SIZE)
+  { index = 0;}
+
+  // rebuilding left and right
+  left = 0;
+  right = 0;
+  for (i=0; i<MODE_ARR_SIZE; i++)
+  {
+    left += L[i];
+    right += R[i];
+  }
+  left = left / MODE_ARR_SIZE;
+  right = right / MODE_ARR_SIZE;
+  /* End to get avarage value */
+  
   xlup = left / IND_DELIMITER;
   xrup = right / IND_DELIMITER;
-//  sprintf(ss, "%d", xlup);
-//  LCD_Print(0,0, ss, false);
-// sprintf(ss, "%d", xrup);
-// LCD_Print(0,1, ss, false);
-
+  if (maxL < xlup)
+    {
+      maxL = xlup;
+      ML = millis();
+    }
+  else
+  {
+    unsigned int MCL = millis();
+    if ((MCL - ML) > IND_MAX_TIMEOUT)
+    {
+      if (maxL > 0) {maxL--;  }
+      ML = millis();  
+    }
+  }
+  if (maxR < xrup)
+  {
+    maxR= xrup;
+    MR = millis();
+  }
+  else
+  {
+    unsigned int MCR = millis();
+    if ((MCR - MR) > IND_MAX_TIMEOUT)
+    {
+      if (maxR > 0) {maxR--;}
+      MR = millis();
+    }
+  }
   while(exitFlag!=3)
   {
     lcd.setCursor(xl,0);
     if (xl<=xlup)
     {
-      if (xl >= (IND_MAX_POINT-3))
+      if (maxL == xl)
       {
-        lcd.write(IND_CNAR_MAX);
-      } else {
-      lcd.write(IND_CNAR_NORM);
+        lcd.write(IND_CHAR_M);
+      }
+      else
+      {
+        lcd.write(IND_CNAR_NORM);
       }
     } else
     {
-      lcd.print(" ");
+      if (maxL == xl)
+      {
+        lcd.write(IND_CHAR_M);
+      }
+      else
+      { 
+        lcd.write(IND_CNAR_E);
+      }
+    }
+    
+    if (maxL == xl)
+    {
+      lcd.write(IND_CHAR_M);
     }
     lcd.setCursor(xr,1);
     if (xr<=xrup)
     {
-      if (xr >= (IND_MAX_POINT-3))
+      if (maxR == xr)
       {
-        lcd.write(IND_CNAR_MAX);
-      } else{
+        lcd.write(IND_CHAR_M);
+      }
+      else
+      {
         lcd.write(IND_CNAR_NORM);
       }
-
     } else
     {
-      lcd.print(" ");
+      if (maxR == xr)
+      {
+        lcd.write(IND_CHAR_M);
+      }
+      else
+      {
+        lcd.write(IND_CNAR_E);
+      }
     }
+    if (maxR == xr)
+    {
+      lcd.write(IND_CHAR_M);
+    }
+      
     if (xl>=IND_MAX_POINT)
     {
       exitFlag |= 1;
