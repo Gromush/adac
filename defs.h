@@ -34,6 +34,7 @@
 #define IND_MAX_TIMEOUT 250 // 500 ms
 #define MODE_MUSIC_LEVEL    25
 #define MODE_ARR_SIZE       3 /// Using 4 bytes array to provide value for level more accurate
+
 // Indicators
 #define IND_MAX_VALUE 795
 #define IND_MAX_POINT  16

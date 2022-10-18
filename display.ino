@@ -104,14 +104,14 @@ void LCD_PritLogo(int x, int y)
 
 void IndicatorAnalogs(void)
 {
-  unsigned int left, right;
   unsigned int xl=1,xr=1, xlup=0, xrup=0;
+  int i;
+  
   static unsigned int maxL=0, maxR=0;
-  byte exitFlag=0;
   static unsigned int L[MODE_ARR_SIZE]={0}, R[MODE_ARR_SIZE]={0};
   static unsigned int index=0;
-  int i;
   static unsigned int MR=0, ML=0;
+  static unsigned int SummL=0, SummR=0;
 
 
   if (GetGConfig()->mode == MODE_NORMAL)
@@ -124,31 +124,24 @@ void IndicatorAnalogs(void)
   lcd.setCursor(0,1);
   lcd.print("R");
   
-  left = analogRead(LEFT_CHANNEL);
-  right = analogRead(RIGHT_CHANNEL);
+ 
   
   /* Start to get avarage value */
-  L[index] = left;
-  R[index] = right;
-  index++;
+  SummL -= L[index];
+  SummR -= R[index];
+  L[index] = analogRead(LEFT_CHANNEL);
+  R[index] = analogRead(RIGHT_CHANNEL);
+  SummL += L[index];
+  SummR += R[index];
   
-  if (index >= MODE_ARR_SIZE)
-  { index = 0;}
-
-  // rebuilding left and right
-  left = 0;
-  right = 0;
-  for (i=0; i<MODE_ARR_SIZE; i++)
-  {
-    left += L[i];
-    right += R[i];
-  }
-  left = left / MODE_ARR_SIZE;
-  right = right / MODE_ARR_SIZE;
+  index++;
+  if (index >= MODE_ARR_SIZE) { index = 0;}
+  
   /* End to get avarage value */
   
-  xlup = left / IND_DELIMITER;
-  xrup = right / IND_DELIMITER;
+  xlup = (SummL / MODE_ARR_SIZE ) / IND_DELIMITER;
+  xrup = (SummR / MODE_ARR_SIZE) / IND_DELIMITER;
+  
   if (maxL < xlup)
     {
       maxL = xlup;
@@ -163,6 +156,7 @@ void IndicatorAnalogs(void)
       ML = millis();  
     }
   }
+  
   if (maxR < xrup)
   {
     maxR= xrup;
@@ -177,69 +171,37 @@ void IndicatorAnalogs(void)
       MR = millis();
     }
   }
-  while(exitFlag!=3)
+  
+  while(xl<=IND_MAX_POINT)
   {
     lcd.setCursor(xl,0);
-    if (xl<=xlup)
+    if (maxL != xl)
     {
-      if (maxL == xl)
+      if (xl<=xlup)
       {
-        lcd.write(IND_CHAR_M);
-      }
-      else
+          lcd.write(IND_CNAR_NORM);
+      } else
       {
-        lcd.write(IND_CNAR_NORM);
-      }
+          lcd.write(IND_CNAR_E);
+      } 
     } else
     {
-      if (maxL == xl)
-      {
-        lcd.write(IND_CHAR_M);
-      }
-      else
-      { 
-        lcd.write(IND_CNAR_E);
-      }
+      lcd.write(IND_CHAR_M);
     }
     
-    if (maxL == xl)
-    {
-      lcd.write(IND_CHAR_M);
-    }
     lcd.setCursor(xr,1);
-    if (xr<=xrup)
+    if (maxR != xr)
     {
-      if (maxR == xr)
-      {
-        lcd.write(IND_CHAR_M);
-      }
-      else
-      {
-        lcd.write(IND_CNAR_NORM);
-      }
-    } else
-    {
-      if (maxR == xr)
-      {
-        lcd.write(IND_CHAR_M);
-      }
-      else
+      if (xr<=xrup)
+      { 
+        lcd.write(IND_CNAR_NORM);   
+      } else
       {
         lcd.write(IND_CNAR_E);
       }
-    }
-    if (maxR == xr)
+    } else
     {
       lcd.write(IND_CHAR_M);
-    }
-      
-    if (xl>=IND_MAX_POINT)
-    {
-      exitFlag |= 1;
-    }
-    if (xr>=IND_MAX_POINT)
-    {
-      exitFlag |= (1<<1);
     }
     xl++;
     xr++;
