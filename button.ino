@@ -97,6 +97,7 @@ void ButtonAction(SavedData_t * saved)
               break;
             case B_INPUT_CHANGE:
               PrintDisplay();
+              SetPwrRdyOn();
               gBConf = B_MAX_VALUE;
               isEnter = true;
               retTimer = 0;

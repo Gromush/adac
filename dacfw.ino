@@ -52,13 +52,11 @@ void setup() {
 }
 
 void loop() {
-  //
-  //CheckMode();
-  //
-  ButtonAction(&saved);
-  BlinkRdyLed(gBConf);
-  GetDACDataSerial();
-  ReturnToMainMode();
-  IndicatorAnalogs();
+
+  ButtonAction(&saved); // 3 time "if" for exit if no action required
+  BlinkRdyLed(gBConf);  // one "if" in normal mode to exit 
+  GetDACDataSerial();   // one "if" serial available in case no action required
+  ReturnToMainMode();   // one "if" for no action case
+  IndicatorAnalogs();   // one "if" in case no mode active
  
 }
