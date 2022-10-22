@@ -2,6 +2,28 @@ extern "C"{
   #include "defs.h"
 }
 
+bool gPwrLedOn; 
+
+bool IsTimeExpired(unsigned int timeout)
+{
+  static unsigned int ts = 0, te = 0;
+  bool result = false;
+    
+  if (ts ==0)
+  {
+    ts = millis();
+  } else
+  {
+    te = millis();
+    if ((te-ts) > timeout)
+    {
+      ts = 0;
+      te = 0;
+      result = true;
+    }
+  }
+  return result;
+}
 
 void SetupLed(void)
 {
@@ -9,6 +31,8 @@ void SetupLed(void)
   pinMode(LED_PWR_RDY,OUTPUT);
   digitalWrite(LED_MAIN_PWR, LOW);
   digitalWrite(LED_PWR_RDY, LOW);
+  gPwrLedOn = false;
+  
 }
 
 void SetMainPwrOn(void)
@@ -19,6 +43,7 @@ void SetMainPwrOn(void)
 void SetPwrRdyOn(void)
 {
   digitalWrite(LED_PWR_RDY, HIGH);
+  gPwrLedOn = true;
 }
 
 void SetPwrRdyOff(void)
@@ -29,20 +54,24 @@ void SetPwrRdyOff(void)
 void BlinkRdyLed(Button_t gBConf)
 {
   
-  if (gBConf == B_MAX_VALUE) // no blink set led to on
+  if (gBConf == B_MAX_VALUE)// no blink set led to on
   {
-    SetPwrRdyOn();
+    if (gPwrLedOn == false)
+    { SetPwrRdyOn(); }
     return;
   }
 
   if (gBConf == B_FILTER_CHANGE)
   {
+   gPwrLedOn = false;
    if (IsTimeExpired(LED_FILTER_MODE_BLINK_TIMEOUT))
    {
      digitalWrite(LED_PWR_RDY, !digitalRead(LED_PWR_RDY));
+     
    }
   } else
   {
+    gPwrLedOn = false;
     if (IsTimeExpired(LED_INPUT_MODE_BLINK_TIMEOUT))
    {
      digitalWrite(LED_PWR_RDY, !digitalRead(LED_PWR_RDY));

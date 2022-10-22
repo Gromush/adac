@@ -78,3 +78,7 @@ Version 1.1.1
 
 Working with more accurate calculation of value
 Has max value label doungraded slowly like was on vintage indicators
+
+Version 1.1.2
+- Optimization of loop() main status checking
+- Fix long button press issue in indicators mode to avoid entering to other modes without display and changing supported

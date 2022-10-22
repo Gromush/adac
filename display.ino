@@ -102,37 +102,40 @@ void LCD_PritLogo(int x, int y)
   
 }
 
+unsigned int maxL=0, maxR=0;
+unsigned int index=0;
+unsigned int MR=0, ML=0;
+unsigned int SummL=0, SummR=0;
+unsigned int cL=0, cR = 0;
+
+void PrepareIndicators(void)
+{
+  lcd.setCursor(0,0);
+  lcd.print("L");
+  lcd.setCursor(0,1);
+  lcd.print("R");
+  maxL=0, maxR=0;
+  index=0;
+  MR=0, ML=0;
+  SummL=0, SummR=0;
+  cL=0, cR = 0;
+}
+
+
 void IndicatorAnalogs(void)
 {
   unsigned int xl=1,xr=1, xlup=0, xrup=0;
   int i;
   
-  static unsigned int maxL=0, maxR=0;
-  static unsigned int L[MODE_ARR_SIZE]={0}, R[MODE_ARR_SIZE]={0};
-  static unsigned int index=0;
-  static unsigned int MR=0, ML=0;
-  static unsigned int SummL=0, SummR=0;
-  static unsigned int cL=0, cR = 0;
 
   if (GetGConfig()->mode == MODE_NORMAL)
   {
     return;
   }
-
-  lcd.setCursor(0,0);
-  lcd.print("L");
-  lcd.setCursor(0,1);
-  lcd.print("R");
-  
- 
   
   /* Start to get avarage value */
-  SummL -= L[index];
-  SummR -= R[index];
-  L[index] = analogRead(LEFT_CHANNEL);
-  R[index] = analogRead(RIGHT_CHANNEL);
-  SummL += L[index];
-  SummR += R[index];
+  SummL += analogRead(LEFT_CHANNEL);
+  SummR += analogRead(RIGHT_CHANNEL);
   
   index++;
   if (index >= MODE_ARR_SIZE) 
@@ -226,6 +229,8 @@ void IndicatorAnalogs(void)
     xr++;
     
   }
+  SummL = 0;
+  SummR = 0;
 
 }
 

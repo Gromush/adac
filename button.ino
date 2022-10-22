@@ -22,14 +22,8 @@ void ReturnToMainMode(void)
   if (retTimer != 0)
   {
     exittime = millis();
-    if (exittime < retTimer) /// wrap millis in uint16 value
-    {
-      wrapValue = 0xFFFF - retTimer;
-      wrapValue += exittime;
-    } else
-    {
-      wrapValue = exittime - retTimer;
-    }
+    wrapValue = exittime - retTimer;
+    
     
     if (wrapValue > RETURN_MAIN_MODE_TIMER)
     {
@@ -51,62 +45,69 @@ void ButtonAction(SavedData_t * saved)
   unsigned int timeout,len;
   char str[30]={0};
   
-  
   if (!digitalRead(BUTTON_FILTER)) // Button pressed
   {
 
-     if (mstart == 0) 
+    if (!debounceDone)
+    {
+      if (mstart == 0) 
         mstart = millis();
-
-     mcurr = millis();
-     timeout = mcurr - mstart;
-     if (!debounceDone)
-     {
+      
+      mcurr = millis();
+      timeout = mcurr - mstart;
+      if (!debounceDone)
+      {
         if (timeout > BUTTON_DEBOUNCE_TIMEOUT)
         {
-            debounceDone = true;
-            return;
+          debounceDone = true;
+          return;
         }
-     }
-     if (debounceDone)
-     {
-        if (timeout > BUTTON_LONG_PRESS_TIMEOUT)
-        {
-           if (!isEnter)
+      }
+    }
+    else
+    {
+      if (GetGConfig()->mode != MODE_NORMAL)
+      {
+        return;
+      }
+      mcurr = millis();
+      timeout = mcurr - mstart;
+      if (timeout > BUTTON_LONG_PRESS_TIMEOUT)
+      {
+         if (!isEnter)
+         {      
+           // Change current state to filter setup
+           switch(gBConf)
            {
-            
-             // Change current state to filter setup
-             switch(gBConf)
-             {
-              case B_MAX_VALUE:
-                gBConf = B_FILTER_CHANGE;
-                LCD_Print(0,0, "Filter mode ON.", true);
-                sprintf(str, "Filter: %s", filters[GetGConfig()->FilterNum - FILTER_INDEX_OFFSET]);
-                LCD_Print(0,1, str, false);
-                isEnter = true;
-                retTimer = millis();
-                break;
-              case B_FILTER_CHANGE:
-                gBConf = B_INPUT_CHANGE;
-                LCD_Print(0,0, "Input mode ON.", true);
-                sprintf(str, "Input: %s", inputStr[saved->bytes.input]);
-                LCD_Print(0,1, str, false);
-                isEnter = true;
-                retTimer = millis();
-                break;
-              case B_INPUT_CHANGE:
-                PrintDisplay();
-                gBConf = B_MAX_VALUE;
-                isEnter = true;
-                break;
-             }
+            case B_MAX_VALUE:
+              gBConf = B_FILTER_CHANGE;
+              LCD_Print(0,0, "Filter mode ON.", true);
+              sprintf(str, "Filter: %s", filters[GetGConfig()->FilterNum - FILTER_INDEX_OFFSET]);
+              LCD_Print(0,1, str, false);
+              isEnter = true;
+              retTimer = millis();
+              break;
+            case B_FILTER_CHANGE:
+              gBConf = B_INPUT_CHANGE;
+              LCD_Print(0,0, "Input mode ON.", true);
+              sprintf(str, "Input: %s", inputStr[saved->bytes.input]);
+              LCD_Print(0,1, str, false);
+              isEnter = true;
+              retTimer = millis();
+              break;
+            case B_INPUT_CHANGE:
+              PrintDisplay();
+              gBConf = B_MAX_VALUE;
+              isEnter = true;
+              retTimer = 0;
+              break;
            }
-        }
-     }
+         }
+      }
+    }
      
   } else
   {
-    
     // Button unpressed after long press
     if (isEnter == true)
     {
@@ -115,17 +116,14 @@ void ButtonAction(SavedData_t * saved)
     {
       // short time unpressing
       if (debounceDone) 
-      {
-        
+      {    
         switch (gBConf)
         {
           case B_MAX_VALUE: // short press only - show version
-            
-            //LCD_Print(0,0, VersionString, true);
-            //delay(1500);
             if (GetGConfig()->mode == MODE_NORMAL)
             {
               GetGConfig()->mode = MODE_MUSIC;
+              PrepareIndicators();
             } else
             {
               GetGConfig()->mode = MODE_NORMAL;
