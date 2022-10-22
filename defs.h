@@ -38,9 +38,9 @@
 #define MODE_ARR_SIZE       10 /// Using 4 bytes array to provide value for level more accurate
 
 // Indicators
-#define IND_MAX_VALUE 795
+#define IND_MAX_VALUE  1100
 #define IND_MAX_POINT  16
-#define IND_DELIMITER  53
+#define IND_DELIMITER  (IND_MAX_VALUE / (IND_MAX_POINT - 1))
 
 #define BRIGHTNESS_VAL      500 
 

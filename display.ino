@@ -140,7 +140,6 @@ void IndicatorAnalogs(void)
   unsigned int xl=1,xr=1, xlup=0, xrup=0;
   int i;
   
-
   if (GetGConfig()->mode == MODE_NORMAL)
   {
     return;
