@@ -28,7 +28,7 @@
 
 #define IND_CHAR_M    4
 #define IND_CNAR_NORM 5
-
+#define IND_CHAR_O    6
 #define IND_CNAR_E    7
 
 #define IND_MAX_TIMEOUT 70 // 100 ms

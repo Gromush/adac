@@ -7,6 +7,7 @@ extern "C"{
 
 LiquidCrystal_I2C lcd(LCD_I2C_ADDRESS, LCD_SYMBOLS_NUM, LCD_LINES_NUM);
 
+// LOGO Upper triangle
 byte logo_up[] = {
   B00000,
   B00100,
@@ -18,6 +19,7 @@ byte logo_up[] = {
   B00000
  };
 
+// LOGO lower triangle
 byte logo_down[] = {
   B00000,
   B11111,
@@ -28,7 +30,7 @@ byte logo_down[] = {
   B00100,
   B00000
  };
-
+// LOGO eyes
  byte logo_c[] = {
   B00000,
   B00100,
@@ -40,6 +42,7 @@ byte logo_down[] = {
   B00000
  };
 
+// Indicator normal line part
  byte indN[] = {
   B00001,
   B00000,
@@ -51,6 +54,7 @@ byte logo_down[] = {
   B00001
  };
 
+// Indicator max part for slow down
   byte indMax[] = {
   B00001,
   B00000,
@@ -61,9 +65,8 @@ byte logo_down[] = {
   B00000,
   B00001
  }; 
- 
 
-
+// Indicator empty
   byte indE[] = {
   B00001,
   B00000,
@@ -74,6 +77,17 @@ byte logo_down[] = {
   B00000,
   B00001
  }; 
+// Indicator overflow (last 3 points) only when active
+byte indO[] = {
+  B11111,
+  B11111,
+  B00000,
+  B11011,
+  B11011,
+  B00000,
+  B11111,
+  B11111
+ }; 
  
 void LCD_CreateCustomLogo()
 {
@@ -83,8 +97,7 @@ void LCD_CreateCustomLogo()
   lcd.createChar(IND_CNAR_NORM,indN);
   lcd.createChar(IND_CNAR_E, indE);
   lcd.createChar(IND_CHAR_M, indMax);
-  
-  
+  lcd.createChar(IND_CHAR_O, indO);
 }
 
 void LCD_PritLogo(int x, int y)
@@ -194,14 +207,20 @@ void IndicatorAnalogs(void)
     }
   }
   
-  while(xl<=IND_MAX_POINT)
+  while(xl<IND_MAX_POINT)
   {
     lcd.setCursor(xl,0);
     if (maxL != xl)
     {
       if (xl<=xlup)
-      {
-          lcd.write(IND_CNAR_NORM);
+      {   
+          if (xl >= (IND_MAX_POINT-3))
+          {
+            lcd.write(IND_CHAR_O);
+          }else
+          {
+            lcd.write(IND_CNAR_NORM);
+          }
       } else
       {
           lcd.write(IND_CNAR_E);
@@ -216,7 +235,14 @@ void IndicatorAnalogs(void)
     {
       if (xr<=xrup)
       { 
-        lcd.write(IND_CNAR_NORM);   
+        if (xr >= (IND_MAX_POINT-3))
+        {
+          lcd.write(IND_CHAR_O); 
+        } else
+        {
+          lcd.write(IND_CNAR_NORM);
+        }
+             
       } else
       {
         lcd.write(IND_CNAR_E);
