@@ -112,7 +112,7 @@ void IndicatorAnalogs(void)
   static unsigned int index=0;
   static unsigned int MR=0, ML=0;
   static unsigned int SummL=0, SummR=0;
-
+  static unsigned int cL=0, cR = 0;
 
   if (GetGConfig()->mode == MODE_NORMAL)
   {
@@ -135,23 +135,35 @@ void IndicatorAnalogs(void)
   SummR += R[index];
   
   index++;
-  if (index >= MODE_ARR_SIZE) { index = 0;}
+  if (index >= MODE_ARR_SIZE) 
+  { 
+    index = 0;
+  } else {
+    return;
+  }
   
   /* End to get avarage value */
   
-  xlup = (SummL / MODE_ARR_SIZE ) / IND_DELIMITER;
-  xrup = (SummR / MODE_ARR_SIZE) / IND_DELIMITER;
+  xlup = ((SummL*2) / MODE_ARR_SIZE ) / IND_DELIMITER;
+  xrup = ((SummR*2) / MODE_ARR_SIZE) / IND_DELIMITER;
   
   if (maxL < xlup)
     {
       maxL = xlup;
       ML = millis();
+      cL=0;
     }
   else
   {
     unsigned int MCL = millis();
-    if ((MCL - ML) > IND_MAX_TIMEOUT)
+    unsigned int maxVL; 
+    if (cL == 0)
+    {maxVL = IND_MAX_TIMEOUT_F;}
+    else
+    {maxVL = IND_MAX_TIMEOUT;}
+    if ((MCL - ML) > maxVL)
     {
+      cL++;
       if (maxL > 0) {maxL--;  }
       ML = millis();  
     }
@@ -161,12 +173,19 @@ void IndicatorAnalogs(void)
   {
     maxR= xrup;
     MR = millis();
+    cR = 0;
   }
   else
   {
+    unsigned int maxVR; 
+    if (cR == 0)
+    {maxVR = IND_MAX_TIMEOUT_F;}
+    else
+    {maxVR = IND_MAX_TIMEOUT;}
     unsigned int MCR = millis();
-    if ((MCR - MR) > IND_MAX_TIMEOUT)
+    if ((MCR - MR) > maxVR)
     {
+      cR++;
       if (maxR > 0) {maxR--;}
       MR = millis();
     }

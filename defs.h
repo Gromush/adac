@@ -31,9 +31,11 @@
 
 #define IND_CNAR_E    7
 
-#define IND_MAX_TIMEOUT 250 // 500 ms
+#define IND_MAX_TIMEOUT 70 // 100 ms
+#define IND_MAX_TIMEOUT_F 350 // 300 ms
+
 #define MODE_MUSIC_LEVEL    25
-#define MODE_ARR_SIZE       3 /// Using 4 bytes array to provide value for level more accurate
+#define MODE_ARR_SIZE       10 /// Using 4 bytes array to provide value for level more accurate
 
 // Indicators
 #define IND_MAX_VALUE 795
