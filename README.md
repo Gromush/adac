@@ -2,7 +2,7 @@
 
 Arduino small FW code to support DAM 1021 Soekris DAC under Arduino control.
 
-Current version is V1.1.1
+Current version is V1.1.2
 
 Arduino controller version:
 - Arduino Nano
