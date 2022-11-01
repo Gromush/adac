@@ -8,7 +8,6 @@ SavedData_t saved = {0};
 extern Button_t gBConf;
 char VersionString[16];
 
-unsigned int debounceMode = 0;
 bool checkModeFlag = false;
 void setup() {
   
@@ -26,7 +25,9 @@ void setup() {
   analogWrite(BRIGHTNESS,BRIGHTNESS_VAL);
   InitSerial();
   GetGConfig()->inputType = UNINIT_VAL;
-  GetGConfig()->mode = MODE_NORMAL;
+  GetGConfig()->autoMode = MODE_NORMAL;
+  GetGConfig()->mode = MODE_AUTO;
+  
   //DAC ON
   pinMode(DAC_PWR_ENABLE,OUTPUT);
   digitalWrite(DAC_PWR_ENABLE, HIGH);
@@ -48,7 +49,7 @@ void setup() {
   }
   GetDACDataSerial();
   PrintDisplay();
-  debounceMode = millis();
+  
 }
 
 void loop() {

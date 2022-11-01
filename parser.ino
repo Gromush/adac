@@ -189,7 +189,10 @@ void GetDACDataSerial()
    parser = GetParse(GetSerial());
 
   
-   if ( (gBConf == B_MAX_VALUE) && (GetGConfig()->mode == MODE_NORMAL) )
+   if (
+      ( (gBConf == B_MAX_VALUE) && (GetGConfig()->mode == MODE_NORMAL) ) ||
+      ( (GetGConfig()->autoMode == MODE_NORMAL) && (GetGConfig()->mode == MODE_AUTO) )
+      )
    {
      switch (parser)
       {

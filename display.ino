@@ -134,10 +134,87 @@ void PrepareIndicators(void)
   cL=0, cR = 0;
 }
 
+void debugP(int x, int y, char * s, unsigned int value)
+{
+  char str[7];
+  sprintf(str, s, value);
+  LCD_Print(x,y,str,false);
+}
+bool CheckAuto(unsigned int left, unsigned int right)
+{
+  bool result;
+  static unsigned int autoStart =0, autoEnd=0;
+  static unsigned int zeroC=0; 
+  //debugP(0,0, "L:   %u",left);
+  //debugP(8,0, "R:   %u",right);
+  if (GetGConfig()->mode != MODE_AUTO)
+  {
+    return true;
+  }
+
+  if (GetGConfig()->autoMode == MODE_NORMAL)
+  {
+    result = false;
+    if ( (left > AUTO_MODE_IN) || (right > AUTO_MODE_IN) )
+    {
+      zeroC = 0;
+      if (autoStart == 0)
+      {
+        autoStart = millis();
+      }
+
+      autoEnd = millis();
+      
+      // Check if music ON
+      if ( (autoEnd - autoStart) > AUTO_MODE_TIME)
+      {
+        GetGConfig()->autoMode = MODE_MUSIC;
+        result = true;
+        autoStart = 0;
+        PrepareIndicators();
+      }
+    } else
+    {
+      // In case small level found try to calc new tieout
+      zeroC++;
+      if (zeroC > AUTO_ZERO_MAX)
+      {
+        autoStart = 0;
+      }
+      //debugP(0,1, "Set: %u",zeroC++);
+    }
+    
+  } else 
+  {
+    result = true;
+    if ( (left < AUTO_MODE_OUT) && (right < AUTO_MODE_OUT) )
+    {
+      
+      if (autoStart == 0)
+      {
+        autoStart = millis();
+      }
+      autoEnd = millis();
+      // Check if music OFF
+      if ( (autoEnd - autoStart) > AUTO_MODE_TIME)
+      {
+        GetGConfig()->autoMode = MODE_NORMAL;
+        result = false;
+        autoStart = 0;
+        PrintDisplay();
+      }
+    } else
+    {
+      autoStart = 0;
+    }
+  }
+
+  return result;
+}
 
 void IndicatorAnalogs(void)
 {
-  unsigned int xl=1,xr=1, xlup=0, xrup=0;
+  unsigned int xl=1,xr=1, xlup=0, xrup=0, anleft, anright;
   int i;
   
   if (GetGConfig()->mode == MODE_NORMAL)
@@ -156,12 +233,21 @@ void IndicatorAnalogs(void)
   } else {
     return;
   }
-  
+
   /* End to get avarage value */
+  anleft  = ((SummL*2) / MODE_ARR_SIZE );
+  anright = ((SummR*2) / MODE_ARR_SIZE);
   
-  xlup = ((SummL*2) / MODE_ARR_SIZE ) / IND_DELIMITER;
-  xrup = ((SummR*2) / MODE_ARR_SIZE) / IND_DELIMITER;
   
+  if (CheckAuto(anleft, anright) == false)
+  {
+    SummL = 0;
+    SummR = 0;
+    return;
+  }
+  
+  xlup = anleft / IND_DELIMITER;
+  xrup = anright / IND_DELIMITER;
   if (maxL < xlup)
     {
       maxL = xlup;

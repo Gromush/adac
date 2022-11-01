@@ -1,7 +1,7 @@
 #ifndef _DEFS_H
 #define _DEFS_H
 
-#define VERSION_STRING "V1.1.2" // current FW code version
+#define VERSION_STRING "V1.1.3" // current FW code version
 
 #define SERIAL_SPEED 115200
 
@@ -34,11 +34,14 @@
 #define IND_MAX_TIMEOUT 70 // 100 ms
 #define IND_MAX_TIMEOUT_F 350 // 300 ms
 
-#define MODE_MUSIC_LEVEL    25
-#define MODE_ARR_SIZE       10 /// Using 4 bytes array to provide value for level more accurate
+#define AUTO_ZERO_MAX       20
+#define AUTO_MODE_IN        0
+#define AUTO_MODE_OUT       1
+#define MODE_ARR_SIZE       10 /// Using 20 measurements to provide value for level more accurate
+#define AUTO_MODE_TIME      3000 // 3 seconds
 
 // Indicators
-#define IND_MAX_VALUE  1100
+#define IND_MAX_VALUE  900
 #define IND_MAX_POINT  16
 #define IND_DELIMITER  (IND_MAX_VALUE / (IND_MAX_POINT - 1))
 
@@ -105,6 +108,7 @@ typedef struct
   unsigned char  FilterNum;
   Input_Type_t   inputType;
   Mode_t         mode;
+  Mode_t         autoMode;
 } Config_t;
 
 // EEPROM
