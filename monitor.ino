@@ -1,6 +1,6 @@
 #include "defs.h"
 
-char * filters[] = {"linear", "mixed", "minimum", "soft"};
+char * filters[] = {"linear ", "mixed  ", "minimum", "soft   "};
 
 unsigned int SetInput(SavedData_t * saved, bool isFirst)
 {

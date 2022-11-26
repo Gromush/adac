@@ -13,14 +13,42 @@ Config_t *GetGConfig(void)
 }
 
 
-void PrintDisplay(void)
+void PrintDisplay(bool clean)
 {
+  if (clean)
+  {
+    LCD_Clear();
+  }
   
-  LCD_Clear();
   printFilter(gConfig.FilterNum);
   printStream(gConfig.streamValue);
   printInput(gConfig.inputType);
+  printTemp();
+  
 }
+
+// Print temperature 
+void printTemp(void)
+{
+  char temp[10];
+  if ((GetGConfig()->autoMode == MODE_MUSIC) ||
+      (GetGConfig()->mode == MODE_MUSIC) ||
+      (gBConf != B_MAX_VALUE))
+  {
+    return;
+  }
+  if (gConfig.isTempUpdated)
+  {
+    float tmep;
+    gConfig.isTempUpdated = false;
+  }
+  GetTemperature(&temp[0]);
+  LCD_Print(8,0,"t",false);
+  LCD_Print(9,0,temp,false);
+  lcd.write(223);
+  lcd.print("C");
+}
+
 
 /////////// Print stream found value
 void printStream(int num)
@@ -50,13 +78,8 @@ void printFilter(int num)
 {
   char str[40]={0};
   int len,i;
-  sprintf(str, "Filter: %s",filters[num-FILTER_INDEX_OFFSET]);
+  sprintf(str, "%s",filters[num-FILTER_INDEX_OFFSET]);
   len = strlen(str);
-  
-  do{
-    str[len] = ' ';
-    len++;
-  } while (len <= 16);
  
   LCD_Print(0,0, str, false);
 }
@@ -194,20 +217,18 @@ void GetDACDataSerial()
       ( (GetGConfig()->autoMode == MODE_NORMAL) && (GetGConfig()->mode == MODE_AUTO) )
       )
    {
+    
      switch (parser)
       {
         case FOUND_FIL:
-          printFilter(gConfig.FilterNum);
-          break;
         case FOUND_STR:
-          printStream(gConfig.streamValue);
-          break;
         case FOUND_IN:
-          printInput(gConfig.inputType);
-          break;
+          PrintDisplay(false);
         default:
           break;
       }
+      
+      
    }
   } // while
 }

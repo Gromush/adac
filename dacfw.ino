@@ -17,6 +17,8 @@ void setup() {
   SetupLed();
   SetMainPwrOn();
   InitLCD();
+  ThermalInit();
+  ThermalRequest();
   ButtonInit();
   LCD_Print(0,0, "Starting...", true);
   LCD_Print(0,1, VersionString,false);
@@ -48,12 +50,14 @@ void setup() {
     SetInput(&saved, true);
   }
   GetDACDataSerial();
-  PrintDisplay();
+  PrintDisplay(true);
   
 }
 
 void loop() {
 
+  GetGConfig()->isTempUpdated = ThermalProceed();
+  printTemp();
   ButtonAction(&saved); // 3 time "if" for exit if no action required
   BlinkRdyLed(gBConf);  // one "if" in normal mode to exit 
   GetDACDataSerial();   // one "if" serial available in case no action required

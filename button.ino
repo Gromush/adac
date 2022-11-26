@@ -29,7 +29,7 @@ void ReturnToMainMode(void)
     {
        if (GetGConfig()->mode == MODE_NORMAL) 
        {
-          PrintDisplay();
+          PrintDisplay(true);
           retTimer = 0;
           gBConf = B_MAX_VALUE;
        }
@@ -96,7 +96,7 @@ void ButtonAction(SavedData_t * saved)
               retTimer = millis();
               break;
             case B_INPUT_CHANGE:
-              PrintDisplay();
+              PrintDisplay(true);
               SetPwrRdyOn();
               gBConf = B_MAX_VALUE;
               isEnter = true;
@@ -128,7 +128,7 @@ void ButtonAction(SavedData_t * saved)
             } else
             {
               GetGConfig()->mode = MODE_NORMAL;
-              PrintDisplay();
+              PrintDisplay(true);
             }
                   
             break;

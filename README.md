@@ -82,3 +82,10 @@ Has max value label doungraded slowly like was on vintage indicators
 Version 1.1.2
 - Optimization of loop() main status checking
 - Fix long button press issue in indicators mode to avoid entering to other modes without display and changing supported
+
+Version 1.1.3
+- Auto mode to change output indicators on when music is detected.
+- Several HW changes support for auto mode as required Shotki diodes less working music detection etc.
+
+Version 1.1.4
+- Add support for temperature sensor DS18B20 on pin A3 

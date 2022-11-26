@@ -89,7 +89,7 @@ byte indO[] = {
   B11111
  }; 
  
-void LCD_CreateCustomLogo()
+void LCD_CreateCustomChars()
 {
   lcd.createChar(LOGO_UP,logo_up);
   lcd.createChar(LOGO_DWN,logo_down);
@@ -201,7 +201,7 @@ bool CheckAuto(unsigned int left, unsigned int right)
         GetGConfig()->autoMode = MODE_NORMAL;
         result = false;
         autoStart = 0;
-        PrintDisplay();
+        PrintDisplay(true);
       }
     } else
     {
@@ -223,8 +223,8 @@ void IndicatorAnalogs(void)
   }
   
   /* Start to get avarage value */
-  SummL += analogRead(LEFT_CHANNEL);
-  SummR += analogRead(RIGHT_CHANNEL);
+  SummL += (analogRead(LEFT_CHANNEL)*2);
+  SummR += (analogRead(RIGHT_CHANNEL)*2);
   
   index++;
   if (index >= MODE_ARR_SIZE) 
@@ -235,8 +235,8 @@ void IndicatorAnalogs(void)
   }
 
   /* End to get avarage value */
-  anleft  = ((SummL*2) / MODE_ARR_SIZE );
-  anright = ((SummR*2) / MODE_ARR_SIZE);
+  anleft  = ((SummL) / MODE_ARR_SIZE );
+  anright = ((SummR) / MODE_ARR_SIZE);
   
   
   if (CheckAuto(anleft, anright) == false)
@@ -340,15 +340,15 @@ void IndicatorAnalogs(void)
     xr++;
     
   }
-  SummL = 0;
-  SummR = 0;
+  SummL = SummL >> 1;
+  SummR = SummR >> 1;
 
 }
 
 void InitLCD(void)
 {
   lcd.init();
-  LCD_CreateCustomLogo();
+  LCD_CreateCustomChars();
   lcd.begin(LCD_SYMBOLS_NUM, LCD_LINES_NUM);
   lcd.clear();         
   lcd.backlight();

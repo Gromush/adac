@@ -1,7 +1,7 @@
 #ifndef _DEFS_H
 #define _DEFS_H
 
-#define VERSION_STRING "V1.1.3" // current FW code version
+#define VERSION_STRING "V1.1.5" // current FW code version
 
 #define SERIAL_SPEED 115200
 
@@ -18,6 +18,7 @@
 #define BUTTON_FILTER  5
 
 // Analog pins
+#define TERMAL_PIN    A3
 #define RIGHT_CHANNEL A2
 #define LEFT_CHANNEL  A1
 #define BRIGHTNESS    A0
@@ -109,6 +110,7 @@ typedef struct
   Input_Type_t   inputType;
   Mode_t         mode;
   Mode_t         autoMode;
+  bool           isTempUpdated;
 } Config_t;
 
 // EEPROM
